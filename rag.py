@@ -128,20 +128,30 @@ Reasoning: <Explain why this assessment is suitable for the given role or skills
     response = llm.generate_content(prompt)
     text = response.text.strip()
 
-    if "Reasoning:" in text:
-        recommendation, reasoning = text.split("Reasoning:", 1)
-        recommendation = recommendation.strip()
-        reasoning = reasoning.strip()
-    else:
-        recommendation = text
-        reasoning = ""
+    # Cleanly split recommendation and reasoning
+    recommendation_text = ""
+    reasoning_text = ""
 
-    save_to_json_log(query, recommendation, reasoning)
+    if "Reasoning:" in text:
+        recommendation_part, reasoning_part = text.split("Reasoning:", 1)
+        recommendation_text = recommendation_part.strip()
+        # Remove any repeated 'Recommendation:' label if model added it
+        if recommendation_text.lower().startswith("recommendation:"):
+            recommendation_text = recommendation_text[len("Recommendation:"):].strip()
+        reasoning_text = reasoning_part.strip()
+    else:
+        recommendation_text = text
+        reasoning_text = ""
+
+    # Re-add 'Recommendation:' at the start for consistency
+    recommendation_text = f"Recommendation: {recommendation_text}"
+
+    save_to_json_log(query, recommendation_text, reasoning_text)
 
     return {
         "message": f"💾 Saved recommendation to {LOG_FILE.name}",
-        "recommendation": recommendation,
-        "reasoning": reasoning
+        "recommendation": recommendation_text,
+        "reasoning": reasoning_text
     }
 
 
