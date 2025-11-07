@@ -12,3 +12,4 @@ transformers==4.57.1
 torch==2.9.0
 langchain-huggingface
 sentence-transformers
+langchain_chroma
