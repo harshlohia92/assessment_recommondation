@@ -1,6 +1,6 @@
 from fastapi import FastAPI, HTTPException, Query
 from pydantic import BaseModel
-from rag import process_assessments, generate_answer  # your existing RAG functions
+from rag import process_assessments, generate_answer  
 from pathlib import Path
 import os
 from dotenv import load_dotenv
