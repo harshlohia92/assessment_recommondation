@@ -1,7 +1,10 @@
 import streamlit as st
 from pathlib import Path
 from rag import process_assessments, generate_answer
+import os
 
+GEMINI_API_KEY = st.secrets["GEMINI_API_KEY"]
+GEMINI_MODEL = st.secrets["GEMINI_MODEL"]
 
 st.set_page_config(
     page_title="SHL Assessment Recommender",
