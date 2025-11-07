@@ -14,17 +14,16 @@ import google.generativeai as genai
 load_dotenv()
 CHUNK_SIZE = 1000
 EMBEDDING_MODEL = "sentence-transformers/all-mpnet-base-v2"
-VECTORSTORE_DIR = Path(__file__).parent / "resources" / "vectorstore"
+VECTORSTORE_DIR = Path("/tmp/vectorstore")  # Cloud-friendly temporary directory
 COLLECTION_NAME = "ASSESSMENTS"
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 GEMINI_MODEL = os.getenv("GEMINI_MODEL")
 
-LOG_FILE = Path(__file__).parent / "recommendation_history.json"
+LOG_FILE = Path("/tmp/recommendation_history.json")  # Cloud-friendly
 
 console = Console()
 llm = None
 vector_store = None
-
 
 
 def initialize_component():
@@ -32,14 +31,18 @@ def initialize_component():
 
     if llm is None:
         console.print("[cyan]Initializing Gemini LLM...[/cyan]")
+        if not GEMINI_API_KEY or not GEMINI_MODEL:
+            raise ValueError("GEMINI_API_KEY or GEMINI_MODEL not set in environment variables!")
         genai.configure(api_key=GEMINI_API_KEY)
         llm = genai.GenerativeModel(GEMINI_MODEL)
 
     if vector_store is None:
+        # Use HF embeddings
         embeddings = HuggingFaceEmbeddings(
             model=EMBEDDING_MODEL,
             model_kwargs={"trust_remote_code": True},
         )
+        VECTORSTORE_DIR.mkdir(parents=True, exist_ok=True)  # Ensure folder exists
         vector_store = Chroma(
             collection_name=COLLECTION_NAME,
             embedding_function=embeddings,
@@ -47,17 +50,17 @@ def initialize_component():
         )
 
 
-def load_assessments(json_file):  # <-- single file, not folder
+def load_assessments(json_file):  # Accept single file
     docs = []
-    if not json_file.exists():
+    json_path = Path(json_file)
+    if not json_path.exists():
         console.print(f"[red]Error: File {json_file} does not exist![/red]")
         return docs
 
-    with open(json_file, "r") as f:
+    with open(json_path, "r") as f:
         data = json.load(f)
         if isinstance(data, list):
             for assessment in data:
-                # Skip if essential keys are missing
                 if not all(k in assessment for k in ["name", "category", "skills_measured", "job_roles", "difficulty", "duration_minutes", "id"]):
                     continue
                 content = f"""
@@ -72,13 +75,16 @@ Duration: {assessment['duration_minutes']} minutes
     return docs
 
 
-
-def process_assessments(json_folder):
+def process_assessments(json_file):
     console.print("[green]Initialize component[/green]")
     initialize_component()
 
     console.print("[yellow]Loading assessments...[/yellow]")
-    docs = load_assessments(json_folder)
+    docs = load_assessments(json_file)
+
+    if not docs:
+        console.print("[red]No assessments loaded. Exiting...[/red]")
+        return
 
     console.print("[yellow]Splitting text into chunks...[/yellow]")
     text_splitter = RecursiveCharacterTextSplitter(
@@ -130,7 +136,6 @@ Reasoning: <Explain why this assessment is suitable for the given role or skills
         recommendation = text
         reasoning = ""
 
-
     save_to_json_log(query, recommendation, reasoning)
 
     return {
@@ -160,12 +165,10 @@ def save_to_json_log(query, recommendation, reasoning):
         json.dump(data, f, indent=4)
 
 
-
 if __name__ == "__main__":
-    json_folder = Path(__file__).parent / "assessment.json"
+    json_file = Path(__file__).parent / "assessment.json"
 
-    process_assessments(json_folder)
-
+    process_assessments(json_file)
 
     console.print("\n[bold cyan]=== Assessment Recommendation Engine ===[/bold cyan]")
     console.print("Type 'exit' to quit.\n")
