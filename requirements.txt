@@ -8,3 +8,5 @@ numpy==2.3.4
 streamlit==1.51.0
 langchain-community
 rich==14.2.0
+transformers==4.57.1
+torch==2.9.0
