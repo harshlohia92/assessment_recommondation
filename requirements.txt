@@ -10,3 +10,5 @@ langchain-community
 rich==14.2.0
 transformers==4.57.1
 torch==2.9.0
+langchain-huggingface
+sentence-transformers
