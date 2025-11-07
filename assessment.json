@@ -1,0 +1,92 @@
+[
+  {
+    "id": "A001",
+    "name": "Cognitive Ability Test",
+    "category": "Cognitive",
+    "skills_measured": ["problem solving", "logical reasoning", "numerical ability"],
+    "job_roles": ["Data Analyst", "Software Engineer", "Product Manager"],
+    "difficulty": "medium",
+    "duration_minutes": 60
+  },
+  {
+    "id": "A002",
+    "name": "Leadership Assessment",
+    "category": "Behavioral",
+    "skills_measured": ["leadership", "team management", "decision making"],
+    "job_roles": ["Project Manager", "Team Lead", "Product Manager"],
+    "difficulty": "hard",
+    "duration_minutes": 45
+  },
+  {
+    "id": "A003",
+    "name": "Verbal Reasoning Test",
+    "category": "Cognitive",
+    "skills_measured": ["reading comprehension", "critical thinking", "grammar"],
+    "job_roles": ["Content Writer", "Business Analyst", "Software Engineer"],
+    "difficulty": "medium",
+    "duration_minutes": 30
+  },
+  {
+    "id": "A004",
+    "name": "Situational Judgment Test",
+    "category": "Behavioral",
+    "skills_measured": ["problem solving", "decision making", "ethics"],
+    "job_roles": ["Manager", "HR Specialist", "Team Lead"],
+    "difficulty": "medium",
+    "duration_minutes": 40
+  },
+  {
+    "id": "A005",
+    "name": "Technical Skills Assessment",
+    "category": "Technical",
+    "skills_measured": ["programming", "database management", "algorithm design"],
+    "job_roles": ["Software Engineer", "Data Engineer", "Full Stack Developer"],
+    "difficulty": "hard",
+    "duration_minutes": 90
+  },
+  {
+    "id": "A006",
+    "name": "Numerical Reasoning Test",
+    "category": "Cognitive",
+    "skills_measured": ["numerical reasoning", "data interpretation", "math problem solving"],
+    "job_roles": ["Accountant", "Financial Analyst", "Data Analyst"],
+    "difficulty": "medium",
+    "duration_minutes": 35
+  },
+  {
+    "id": "A007",
+    "name": "Emotional Intelligence Test",
+    "category": "Behavioral",
+    "skills_measured": ["empathy", "self-awareness", "relationship management"],
+    "job_roles": ["HR Specialist", "Team Lead", "Manager"],
+    "difficulty": "medium",
+    "duration_minutes": 50
+  },
+  {
+    "id": "A008",
+    "name": "Customer Service Assessment",
+    "category": "Behavioral",
+    "skills_measured": ["communication", "problem solving", "customer empathy"],
+    "job_roles": ["Customer Support", "Sales Associate", "Account Manager"],
+    "difficulty": "easy",
+    "duration_minutes": 25
+  },
+  {
+    "id": "A009",
+    "name": "Coding Challenge",
+    "category": "Technical",
+    "skills_measured": ["python", "algorithm design", "data structures"],
+    "job_roles": ["Software Engineer", "Full Stack Developer", "Backend Developer"],
+    "difficulty": "hard",
+    "duration_minutes": 60
+  },
+  {
+    "id": "A010",
+    "name": "Analytical Thinking Test",
+    "category": "Cognitive",
+    "skills_measured": ["logical reasoning", "pattern recognition", "critical thinking"],
+    "job_roles": ["Business Analyst", "Data Analyst", "Consultant"],
+    "difficulty": "medium",
+    "duration_minutes": 40
+  }
+]
