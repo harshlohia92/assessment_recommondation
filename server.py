@@ -1,22 +1,27 @@
 import os
+import json
+from pathlib import Path
 import uvicorn
 from fastapi import FastAPI, Query
 from fastapi.responses import JSONResponse
 from rag import generate_answer, process_assessments
-import json
 
 app = FastAPI(title="Assessment Recommendation API")
 
+# ✅ Run on startup
+@app.on_event("startup")
 def startup_event():
-    json_file = Path(__file__).parent / "assisments" / "ass.json"
+    json_file = Path(__file__).parent / "assessments" / "ass.json"
     process_assessments(json_file)
-    print("Assessments processed and vector DB initialized.")
+    print("✅ Assessments processed and vector DB initialized.")
+
 
 @app.get("/")
 def home():
     return {"message": "Assessment Recommendation API is running!"}
 
-@app.get("/recommend")
+
+@app.api_route("/recommend", methods=["GET", "HEAD"])
 def recommend(query: str = Query(..., description="Job role or skill to recommend assessments for")):
     try:
         result = generate_answer(query)
@@ -42,5 +47,5 @@ def recommend(query: str = Query(..., description="Job role or skill to recommen
 
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 10000)) 
+    port = int(os.environ.get("PORT", 10000))
     uvicorn.run("server:app", host="0.0.0.0", port=port)
