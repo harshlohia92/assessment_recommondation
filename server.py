@@ -7,6 +7,11 @@ import json
 
 app = FastAPI(title="Assessment Recommendation API")
 
+def startup_event():
+    json_file = Path(__file__).parent / "assisments" / "ass.json"
+    process_assessments(json_file)
+    print("✅ Assessments processed and vector DB initialized.")
+
 @app.get("/")
 def home():
     return {"message": "🚀 Assessment Recommendation API is running!"}
