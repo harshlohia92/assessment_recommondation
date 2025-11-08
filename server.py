@@ -10,11 +10,11 @@ app = FastAPI(title="Assessment Recommendation API")
 def startup_event():
     json_file = Path(__file__).parent / "assisments" / "ass.json"
     process_assessments(json_file)
-    print("✅ Assessments processed and vector DB initialized.")
+    print("Assessments processed and vector DB initialized.")
 
 @app.get("/")
 def home():
-    return {"message": "🚀 Assessment Recommendation API is running!"}
+    return {"message": "Assessment Recommendation API is running!"}
 
 @app.get("/recommend")
 def recommend(query: str = Query(..., description="Job role or skill to recommend assessments for")):
@@ -31,7 +31,7 @@ def recommend(query: str = Query(..., description="Job role or skill to recommen
 
         return JSONResponse(
             content={
-                "message": "💾 Saved recommendation to recommendation_history.json",
+                "message": "Saved recommendation to recommendation_history.json",
                 **result,
             },
             ensure_ascii=False
