@@ -1,53 +1,59 @@
-from fastapi import FastAPI, HTTPException, Query
-from pydantic import BaseModel
-from rag import process_assessments, generate_answer  
-from pathlib import Path
 import os
-from dotenv import load_dotenv
+import uvicorn
+from fastapi import FastAPI, Query
+from fastapi.responses import JSONResponse
+from rag import generate_answer, process_assessments  
+from pathlib import Path
+import json
 
-load_dotenv()
-
-app = FastAPI(title="SHL Assessment Recommendation Engine")
-
-
-json_file = Path(__file__).parent / "assisments" / "ass.json"
-process_assessments(json_file)
-
-
-class QueryRequest(BaseModel):
-    query: str
+app = FastAPI(title="Assessment Recommendation API")
 
 
-@app.post("/recommend")
-async def recommend_post(request: QueryRequest):
-    """
-    Recommend assessment based on JSON POST body:
-    {
-        "query": "ai engineer"
-    }
-    """
-    try:
-        result = generate_answer(request.query)
-        return result
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+@app.on_event("startup")
+def startup_event():
+    json_file = Path(__file__).parent / "assisments" / "ass.json"
+    process_assessments(json_file)
+    print(" Assessments processed and vector DB initialized.")
+
+
+@app.get("/")
+def home():
+    return {"message": " Assessment Recommendation API is running!"}
 
 
 @app.get("/recommend")
-async def recommend_get(query: str = Query(..., description="Job role or skills to get assessment recommendation")):
+def recommend(query: str = Query(..., description="Job role or skill to recommend assessments for")):
     """
-    Recommend assessment via query string:
-    Example: /recommend?query=ai+engineer
+    Example: /recommend?query=python+developer
     """
     try:
         result = generate_answer(query)
-        return result
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
 
+        
+        history = {
+            "query": query,
+            "recommendation": result.get("recommendation"),
+            "reasoning": result.get("reasoning"),
+        }
+
+        with open("recommendation_history.json", "a", encoding="utf-8") as f:
+            f.write(json.dumps(history, ensure_ascii=False) + "\n")
+
+        return JSONResponse(
+            content={
+                "message": "💾 Saved recommendation to recommendation_history.json",
+                **result,
+            },
+            ensure_ascii=False
+        )
+
+    except Exception as e:
+        return JSONResponse(
+            content={"error": str(e)},
+            status_code=500
+        )
 
 
 if __name__ == "__main__":
-    import uvicorn
-    port = int(os.environ.get("PORT", 8000))  # Render sets PORT dynamically
+    port = int(os.environ.get("PORT", 8080))
     uvicorn.run("server:app", host="0.0.0.0", port=port)
