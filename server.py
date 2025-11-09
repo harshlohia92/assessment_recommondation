@@ -8,12 +8,12 @@ from rag import generate_answer, process_assessments
 
 app = FastAPI(title="Assessment Recommendation API")
 
-# ✅ Run on startup
+
 @app.on_event("startup")
 def startup_event():
     json_file = Path(__file__).parent / "assessments" / "ass.json"
     process_assessments(json_file)
-    print("✅ Assessments processed and vector DB initialized.")
+    print("Assessments processed and vector DB initialized.")
 
 
 @app.get("/")
