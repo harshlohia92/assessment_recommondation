@@ -1,7 +1,6 @@
 import os
 import json
 from pathlib import Path
-import uvicorn
 from fastapi import FastAPI, Query
 from fastapi.responses import JSONResponse
 from rag import generate_answer, process_assessments
@@ -44,9 +43,3 @@ def recommend(query: str = Query(..., description="Job role or skill to recommen
 
     except Exception as e:
         return JSONResponse(content={"error": str(e)}, status_code=500)
-
-
-if __name__ == "__main__":
-   
-    port = int(os.environ.get("PORT", 8000))
-    uvicorn.run("server:app", host="0.0.0.0", port=port)
