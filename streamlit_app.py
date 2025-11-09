@@ -11,7 +11,7 @@ st.set_page_config(
 st.title("🧠 SHL Assessment Recommendation Engine")
 st.markdown("Enter a job role or skills, and get the best SHL assessment with reasoning.")
 
-# Use the JSON file, not a folder
+
 json_file = Path(__file__).parent / "ass.json"
 process_assessments(json_file)
 
